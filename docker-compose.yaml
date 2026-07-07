@@ -1,6 +1,8 @@
 services:
   metatube:
-    image: ghcr.io/metatube-community/metatube-server:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: metatube
     ports:
       - "8080:8080"

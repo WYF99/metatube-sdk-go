@@ -4,7 +4,7 @@ WORKDIR /src
 COPY . /src
 
 RUN apk add --update --no-cache --no-progress make git \
-    && make server
+    && make development
 
 FROM alpine:latest
 LABEL org.opencontainers.image.licenses=Apache-2.0
