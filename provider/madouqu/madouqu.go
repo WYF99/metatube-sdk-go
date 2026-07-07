@@ -25,7 +25,7 @@ var (
 
 const (
 	Name     = "MadouQu"
-	Priority = 0 // Disabled by default, use `export MT_MOVIE_PROVIDER_MADOUQU__PRIORITY=1000` to enable.
+	Priority = 1000 - 3 // Enabled by default; override with `export MT_MOVIE_PROVIDER_MADOUQU__PRIORITY=<n>`.
 )
 
 const (
@@ -177,13 +177,31 @@ func (mdq *MadouQu) SearchMovie(keyword string) (results []*model.MovieSearchRes
 	return
 }
 
+// photonHostPattern matches WordPress's Photon CDN hosts (e.g. i0.wp.com),
+// which embed the original media host as the first path segment, e.g.
+// https://i0.wp.com/{original-host}/{original-path}.
+var photonHostPattern = regexp.MustCompile(`^i[0-9]\.wp\.com$`)
+
 func ExtractImgSrc(src string) string {
 	u, err := url.Parse(src)
 	if err != nil {
 		return src
 	}
 	if ss := regexp.MustCompile(`(https?://.+$)`).FindStringSubmatch(u.Path); len(ss) > 0 {
-		return ss[1]
+		src = ss[1]
+		if u, err = url.Parse(src); err != nil {
+			return src
+		}
+	}
+	// MadouQu serves images through Photon using whichever rotating mirror
+	// domain (e.g. md.hm1225.cyou) was active when the page was rendered;
+	// some of those mirrors 404 on files that remain available under the
+	// canonical madouqu.com host, so normalize to it.
+	if photonHostPattern.MatchString(u.Host) {
+		if _, rest, ok := strings.Cut(strings.TrimPrefix(u.Path, "/"), "/"); ok {
+			u.Path = "/madouqu.com/" + rest
+			return u.String()
+		}
 	}
 	return src
 }

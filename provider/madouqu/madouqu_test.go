@@ -40,6 +40,14 @@ func TestExtractImgSrc(t *testing.T) {
 			"https://sp-ao.shortpixel.ai/client/to_auto,q_lossless,ret_img,w_717,h_569/http://madouqu.com/wp-content/uploads/2023/03/1678787961-49cc48460b5afc7.jpg",
 			"http://madouqu.com/wp-content/uploads/2023/03/1678787961-49cc48460b5afc7.jpg",
 		},
+		{
+			"https://i0.wp.com/md.hm1225.cyou/wp-content/uploads/2025/10/1759546987-774e1d4aeb2cfaa.jpg?resize=1327%2C759&ssl=1",
+			"https://i0.wp.com/madouqu.com/wp-content/uploads/2025/10/1759546987-774e1d4aeb2cfaa.jpg?resize=1327%2C759&ssl=1",
+		},
+		{
+			"https://i0.wp.com/madouqu.com/wp-content/uploads/2025/10/1760751855-be4a586d635f45a.jpg?fit=1280%2C855&ssl=1",
+			"https://i0.wp.com/madouqu.com/wp-content/uploads/2025/10/1760751855-be4a586d635f45a.jpg?fit=1280%2C855&ssl=1",
+		},
 	} {
 		assert.Equal(t, unit.want, ExtractImgSrc(unit.url))
 	}
